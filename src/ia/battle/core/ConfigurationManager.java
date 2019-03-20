@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) 2012-2017, Ing. Gabriel Barrera <gmbarrera@gmail.com>
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above 
+ * copyright notice and this permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES 
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR 
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN 
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF 
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+package ia.battle.core;
+
+//TODO: Read parameters from archive
+
+public final class ConfigurationManager {
+
+	private static ConfigurationManager instance = new ConfigurationManager();
+
+	public static ConfigurationManager getInstance() {
+		return instance;
+	}
+
+	public int getMaxPointsPerWarrior() {
+		return 200;
+	}
+	
+	public int getMapHeight() {
+		//return 40 + 1;	//Multiplo de 2 mas 1
+		return 50;
+	}
+	
+	public int getMapWidth() {
+		//return 60 + 1;		//Multiplo de 4 mas 1
+		return 70;
+	}
+	
+	public int getTurnsToShrink() {
+		return 900;
+	}
+	
+	public int getShrinkStep() {
+		return 10;
+	}
+	
+	public int getActionsPerTurn() {
+		return 3;
+	}
+	
+	public int getMaxWarriorPerBattle() {
+		return 20;
+	}
+	
+	/**
+	 * Returns the max range available for a warrior (radius)
+	 * @return
+	 */
+	public int getMaxRangeForWarrior() {
+		int maxRange = Math.min(ConfigurationManager.getInstance().getMapHeight(), ConfigurationManager.getInstance().getMapWidth());
+		return maxRange / 4;
+	}
+
+	public int getFieldCellHitPoints() {
+		return 10;
+	}
+}

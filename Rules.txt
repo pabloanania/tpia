@@ -1,0 +1,38 @@
+1	Si al moverse en la celda destino esta el otro Warrior, no se puede avanzar mas, se queda en el casillero inmediato anterior, pero si se puede pasar por arriba si el destino es otra celda
+	
+2	El primero a jugar es determinado por el azar.
+	
+3	En Cada turno se pueden jugar "A" acciones (por default 3), se van pidiendo al warrior de una accion a la vez, hasta completar las "A" acciones que tiene disponibles.
+	
+4	Las acciones disponibles son: Move, Attack, Skip (no hace nada) y suicide.
+	
+5	La fuerza del ataque es calculada con la fuerza del warrior modificada por la distribucion normal. La Fuerza Real a aplicar es la fuerza del warrior por un numero x entre 0 y 1 con distribucion Normal. Y la defensa es el nivel de defensa D2 del warrior atacado por un numero y entre 0 y 1 con distribucion normal. Entonces: VidaAtacado = VidaAtacado - (FuerzaAtacante * x - DefensaAtacado * y), si lo que se resta es positivo.
+	
+6	El spawneo es en cualquier parte del mapa, o sea Aleatorio.
+	
+7	Al alcanzar un turno determinado se empieza a achicar el tamaño del mapa, hasta alcanzar un determinado tamaño, y se achica cada X turnos (default 5). Si un Warrrior esta en la columna/fila que desaparece, este se desplaza un lugar, y si está ocupado, va al azar al mas cercano disponible.
+	
+8	Visibilidad del mapa, obstaculos todo por medio del getFieldCell(x,y). Tambien se puede ver la posicion del enemigo con getEnemyPosition, si no está en rango solo se accede a la posicion y si lo está tambien la vida que tiene.
+	
+9	Golpe por medio de paredes: Si se puede.
+	
+10	Suicide: Al suicidarse genera un daño igual a su Fuerza por 1 dividido el numero de accion dentro del turno por el porcentaje de vida.
+	
+11	Special items: solo se puede tener un Item, estos pueden ser: Fuerza, Velocidad, Defensa y Rango.
+	
+12	Speed, las celdas tienen un costo variable dependiendo del tipo que sea.
+	
+13	Comunicacion entre warrior y el warriormanager: si
+
+
+
+TODO
+Ajustar el rango de ataque a un porcentaje relacion con el tamaño del mapa.
+
+Camino de solo sentido.
+
+Daño en funcion de la distancia.
+
+Build Wall
+
+
