@@ -10,13 +10,11 @@ public class TeamManager extends WarriorManager {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Ananá Kombat";
 	}
 
 	@Override
 	public Warrior getNextWarrior() throws RuleException {
-		// TODO Auto-generated method stub
-		return null;
+		return new NormalWarrior();
 	}
 }

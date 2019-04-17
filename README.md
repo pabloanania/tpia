@@ -1,5 +1,7 @@
 # TO DO
-* Comenzar a programar las clases nuevas!
+* Buscar los regalos
+* Armar paredes si es victorioso
+* Evitar al hunter
 
 
 # Readme original
