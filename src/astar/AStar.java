@@ -2,6 +2,9 @@ package astar;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import ia.battle.core.BattleField;
+import ia.battle.core.ConfigurationManager;
+
 public class AStar {
 
 	private int[][] map;
@@ -69,10 +72,14 @@ public class AStar {
 
 			//Compute the distance from origin to node 'n' 
 			int g = node.getG();
+			/*
+			// CODIGO ORIGINAL: Cuestan 10 rectas y 14 diagonal
 			if (node.getX() == n.getX() || node.getY() == n.getY())
 				g += 10;
 			else
 				g += 14;
+			*/
+			g += BattleField.getInstance().getFieldCell(n.getX(), n.getY()).getCost();
 
 			if (!openNodes.contains(n)) {
 

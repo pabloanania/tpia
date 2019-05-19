@@ -12,10 +12,13 @@ public class NormalWarrior extends Warrior {
 	
 	private ConfigurationManager configManager;
 	private BattleField bField;
+	private int pointsLeft = ConfigurationManager.getInstance().getMaxPointsPerWarrior();
 	
 	
-	public NormalWarrior() throws RuleException {
-		super("Balanceado", 20, 5, 5, 20, 5);
+	public NormalWarrior(String name, int health, int defense, int strength, int speed, int range) throws RuleException {
+		super(name, health, defense, strength, speed, range);
+		
+		configManager = ConfigurationManager.getInstance();
 	}
 
 	@Override
