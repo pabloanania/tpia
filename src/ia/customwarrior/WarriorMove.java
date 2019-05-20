@@ -14,20 +14,22 @@ public class WarriorMove extends Move{
 	private Warrior warrior;
 	private ConfigurationManager configManager;
 	private BattleField bField;
+	private int destX;
+	private int destY;
 
 	
-	public WarriorMove(Warrior warrior){
+	public WarriorMove(Warrior warrior, FieldCell destination){
 		this.warrior = warrior;
 		this.configManager = ConfigurationManager.getInstance();
 		this.bField = BattleField.getInstance();
+		
+		this.destX = destination.getX();
+		this.destY = destination.getY();
 	}
 	
 	@Override
-	public ArrayList<FieldCell> move() {
-		int enemyX = bField.getEnemyData().getFieldCell().getX();
-		int enemyY = bField.getEnemyData().getFieldCell().getY();
-		
-		return getMovementPath(enemyX,enemyY);
+	public ArrayList<FieldCell> move() {	
+		return getMovementPath(destX, destY);
 	}
 	
 	
