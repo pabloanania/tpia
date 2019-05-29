@@ -90,9 +90,6 @@ public class NormalWarrior extends Warrior {
 	private Action searchRoutine(long tick, int actionNumber){
 		ArrayList<FieldCell> specialItems = bField.getSpecialItems();
 		FieldCell nearestItem = null;
-		
-		if (specialItems.size() > 0)
-			nearestItem = specialItems.get(0);
 			
 		float nearestDist = Float.MAX_VALUE;
 		

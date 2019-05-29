@@ -27,7 +27,7 @@ public final class ConfigurationManager {
 	}
 
 	public int getMaxPointsPerWarrior() {
-		return 100;
+		return 80;
 	}
 	
 	public int getMapHeight() {
