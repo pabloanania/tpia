@@ -34,23 +34,19 @@ public class NormalWarrior extends Warrior {
 	}
 
 	@Override
-	public Action playTurn(long tick, int actionNumber) {
-		// Si de casualidad tiene caja la agarra
-		if (this.getPosition().hasItem())
-			this.useSpecialItem();
-			
+	public Action playTurn(long tick, int actionNumber) {	
 		// Verifica si debe cambiar de estados
 		stateChangeCheck();
 		
 		// Actúa según estado
 		switch(state){
-		case Patrol:
-			return patrolRoutine(tick, actionNumber);
-		case Escape:
-			return escapeRoutine(tick, actionNumber);
-		case Search: default:
-			return searchRoutine(tick, actionNumber);
-		}
+			case Patrol:
+				return patrolRoutine(tick, actionNumber);
+			case Escape:
+				return escapeRoutine(tick, actionNumber);
+			case Search: default:
+				return searchRoutine(tick, actionNumber);
+		}		
 	}
 
 	@Override
@@ -93,21 +89,34 @@ public class NormalWarrior extends Warrior {
 	
 	private Action searchRoutine(long tick, int actionNumber){
 		ArrayList<FieldCell> specialItems = bField.getSpecialItems();
+		FieldCell nearestItem = null;
+		
+		if (specialItems.size() > 0)
+			nearestItem = specialItems.get(0);
+			
+		/*
 		float nearestDist = Float.MAX_VALUE;
+		FieldCell secondNearestItem = null;
 		FieldCell nearestItem = null;
 		
 		for (FieldCell cell : specialItems){
 			float dist = bField.calculateDistance(this.getPosition(), cell);
 			
 			if (dist < nearestDist){
+				secondNearestItem = nearestItem;
 				nearestItem = cell;
 				nearestDist = dist;
 			}
 		}
 		
-		// FALTA: NO SE PUEDEN AGARRAR ALGUNAS CAJAS :(
-		if (nearestItem.hasItem()){
-			this.useSpecialItem();
+
+		if (this.getPosition() == nearestItem)
+			nearestItem = secondNearestItem;
+		 */
+		
+		if (nearestItem == null){
+			setState(States.Patrol);
+			return patrolRoutine(tick, actionNumber);
 		}
 		
 		return new WarriorMove(this, nearestItem);
@@ -116,6 +125,7 @@ public class NormalWarrior extends Warrior {
 	private Action escapeRoutine(long tick, int actionNumber){
 		FieldCell from;
 		
+		// FIX: No debe tener en cuenta la posición del enemigo sino la del avatar mismo
 		if (bField.getEnemyData().getInRange())
 			from = bField.getEnemyData().getFieldCell();
 		else
@@ -125,17 +135,18 @@ public class NormalWarrior extends Warrior {
 	}
 	
 	private FieldCell getEscapeDestination(FieldCell from){
+		// FIX: Escape SOLO a celda del medio horizontalmente, arriba o abajo segun corresponda
 		int width = configManager.getMapWidth();
 		int height = configManager.getMapHeight();
 		
 		if (from.getX() < width/2){
 			if (from.getY() < width/2)
-				return bField.getFieldCell(width, height);
+				return bField.getFieldCell(width-1, height-1);
 			else
-				return bField.getFieldCell(width, 0);
+				return bField.getFieldCell(width-1, 0);
 		}else{
 			if (from.getY() < width/2)
-				return bField.getFieldCell(0, height);
+				return bField.getFieldCell(0, height-1);
 			else
 				return bField.getFieldCell(0, 0);
 		}
