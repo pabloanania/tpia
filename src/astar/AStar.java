@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import ia.battle.core.BattleField;
-import ia.battle.core.ConfigurationManager;
 
 public class AStar {
 

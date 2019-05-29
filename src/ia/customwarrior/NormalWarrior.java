@@ -1,12 +1,11 @@
 package ia.customwarrior;
 
 import java.util.ArrayList;
-
 import ia.battle.core.BattleField;
 import ia.battle.core.ConfigurationManager;
 import ia.battle.core.FieldCell;
+import ia.battle.core.FieldCellType;
 import ia.battle.core.Warrior;
-import ia.battle.core.abilities.Ability;
 import ia.battle.core.actions.Action;
 import ia.battle.core.actions.Attack;
 import ia.exceptions.RuleException;
@@ -15,13 +14,12 @@ public class NormalWarrior extends Warrior {
 	
 	private ConfigurationManager configManager;
 	private BattleField bField;
-	private int pointsLeft = ConfigurationManager.getInstance().getMaxPointsPerWarrior();
 	private enum States {
-		Idle, Patrol, Escape, Search  
+		Idle, Patrol, EscapeFromHunter, EscapeFromEnemy, Search  
 	}
 	private States state;
-	private FieldCell escapeSource;
-	private FieldCell escapeDestination;
+	private FieldCell escapeTop;
+	private FieldCell escapeBottom;
 	
 	
 	
@@ -31,6 +29,8 @@ public class NormalWarrior extends Warrior {
 		configManager = ConfigurationManager.getInstance();
 		bField = BattleField.getInstance();
 		state = States.Idle;
+		escapeTop = null;
+		escapeBottom = null;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class NormalWarrior extends Warrior {
 		switch(state){
 			case Patrol:
 				return patrolRoutine(tick, actionNumber);
-			case Escape:
+			case EscapeFromEnemy: case EscapeFromHunter:
 				return escapeRoutine(tick, actionNumber);
 			case Search: default:
 				return searchRoutine(tick, actionNumber);
@@ -54,11 +54,11 @@ public class NormalWarrior extends Warrior {
 		// Si atacó el enemigo
 		if (source == bField.getEnemyData().getFieldCell()){
 			if (damage > this.getStrength())
-				setState(States.Escape);
+				setState(States.EscapeFromEnemy);
 			else
 				setState(States.Patrol);
 		}else{
-			setState(States.Escape);
+			setState(States.EscapeFromHunter);
 		}
 	}
 
@@ -94,25 +94,17 @@ public class NormalWarrior extends Warrior {
 		if (specialItems.size() > 0)
 			nearestItem = specialItems.get(0);
 			
-		/*
 		float nearestDist = Float.MAX_VALUE;
-		FieldCell secondNearestItem = null;
-		FieldCell nearestItem = null;
 		
+		// FIX: Se traba al conseguir algunos items
 		for (FieldCell cell : specialItems){
 			float dist = bField.calculateDistance(this.getPosition(), cell);
 			
 			if (dist < nearestDist){
-				secondNearestItem = nearestItem;
 				nearestItem = cell;
 				nearestDist = dist;
 			}
 		}
-		
-
-		if (this.getPosition() == nearestItem)
-			nearestItem = secondNearestItem;
-		 */
 		
 		if (nearestItem == null){
 			setState(States.Patrol);
@@ -123,39 +115,43 @@ public class NormalWarrior extends Warrior {
 	}
 	
 	private Action escapeRoutine(long tick, int actionNumber){
-		FieldCell from;
+		FieldCell enemyCell = bField.getEnemyData().getFieldCell();
+		FieldCell hunterCell = bField.getHunterData().getFieldCell();
 		
-		// FIX: No debe tener en cuenta la posición del enemigo sino la del avatar mismo
-		if (bField.getEnemyData().getInRange())
-			from = bField.getEnemyData().getFieldCell();
+		if (state == States.EscapeFromEnemy)
+			return new WarriorMove(this, getEscapeDestination(enemyCell));
 		else
-			from = bField.getHunterData().getFieldCell();
-		
-		return new WarriorMove(this, getEscapeDestination(from));
+			return new WarriorMove(this, getEscapeDestination(hunterCell));
 	}
 	
 	private FieldCell getEscapeDestination(FieldCell from){
-		// FIX: Escape SOLO a celda del medio horizontalmente, arriba o abajo segun corresponda
 		int width = configManager.getMapWidth();
 		int height = configManager.getMapHeight();
 		
-		if (from.getX() < width/2){
-			if (from.getY() < width/2)
-				return bField.getFieldCell(width-1, height-1);
-			else
-				return bField.getFieldCell(width-1, 0);
-		}else{
-			if (from.getY() < width/2)
-				return bField.getFieldCell(0, height-1);
-			else
-				return bField.getFieldCell(0, 0);
-		}
+		if (escapeBottom == null)
+			for (int i=height-1; i>=0; i--)
+				if (bField.getFieldCell((width-1)/2, i).getFieldCellType() != FieldCellType.BLOCKED)
+					escapeBottom = bField.getFieldCell(width/2, i);
+				
+		if (escapeTop == null)
+			for (int i=0; i<height; i++)
+				if (bField.getFieldCell((width-1)/2, i).getFieldCellType() != FieldCellType.BLOCKED)
+					escapeTop = bField.getFieldCell(width/2, i);
+		
+		if (from.getY() < height/2)
+			return escapeTop;
+		else
+			return escapeBottom;
 	}
 	
 	private void stateChangeCheck(){
 		switch(state){
-			case Escape:
-				if (!bField.getEnemyData().getInRange() && !bField.getHunterData().getInRange())
+			case EscapeFromHunter: case EscapeFromEnemy:
+				/*
+				if (!bField.getHunterData().getInRange() || 
+						(this.getPosition() == escapeTop || this.getPosition() == escapeBottom))
+						*/
+				if (this.getPosition() == escapeTop || this.getPosition() == escapeBottom)
 					state=States.Idle;
 				break;
 			case Search:

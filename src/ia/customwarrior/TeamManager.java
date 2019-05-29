@@ -1,5 +1,7 @@
 package ia.customwarrior;
 
+import java.util.Random;
+
 import ia.battle.core.ConfigurationManager;
 import ia.battle.core.Warrior;
 import ia.battle.core.WarriorManager;
@@ -7,9 +9,11 @@ import ia.exceptions.RuleException;
 
 public class TeamManager extends WarriorManager {
 	private ConfigurationManager configManager;
+	private Random random;
 	
 	public TeamManager(){
 		configManager = ConfigurationManager.getInstance();
+		random = new Random();
 	}
 
 	@Override
@@ -19,10 +23,38 @@ public class TeamManager extends WarriorManager {
 
 	@Override
 	public Warrior getNextWarrior() throws RuleException {
-		float[] percentages = {0.2f, 0.2f, 0.2f, 0.2f, 0.2f};
+		float[] percentages;
+		String name;
+		
+		// STAT ORDER: 					Health, Def.,	Str.,	Speed,	Range
+		float[] balancedPercentages = 	{0.2f, 	0.2f, 	0.2f, 	0.2f, 	0.2f};
+		float[] fastPercentages = 		{0.1f, 	0.1f,	0.1f,	0.5f,	0.2f};
+		float[] healtyPercentages = 	{0.5f,	0.1f,	0.1f,	0.2f,	0.1f};
+		float[] strongPercentages = 	{0.1f,	0.1f,	0.4f,	0.2f,	0.2f};
+		float[] rangedPercentages = 	{0.05f,	0.05f,	0.1f,	0.2f,	0.6f};
+		
+		int rnd = random.nextInt(100);
+		
+		if (rnd < 40){
+			percentages = fastPercentages;
+			name = "Sonic";
+		}else if (rnd >= 40 && rnd < 75){
+			percentages = strongPercentages;
+			name = "Hulk";
+		}else if (rnd >= 75 && rnd < 90){
+			percentages = healtyPercentages;
+			name = "Veggie";	
+		}else if (rnd >= 90 && rnd < 95){
+			percentages = rangedPercentages;
+			name = "Sniper";
+		}else{
+			percentages = balancedPercentages;
+			name = "Vanilla";
+		}
+		
 		int[] stats = calculatePoints(percentages);
 		
-		return new NormalWarrior("Balanceado", stats[0], stats[1], stats[2], stats[3], stats[4]);
+		return new NormalWarrior(name, stats[0], stats[1], stats[2], stats[3], stats[4]);
 	}
 	
 	private int[] calculatePoints(float[] percentages){
