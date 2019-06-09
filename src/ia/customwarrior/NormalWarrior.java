@@ -51,15 +51,12 @@ public class NormalWarrior extends Warrior {
 
 	@Override
 	public void wasAttacked(int damage, FieldCell source) {
-		// Si atacó el enemigo
-		if (source == bField.getEnemyData().getFieldCell()){
-			if (damage > this.getStrength())
-				setState(States.EscapeFromEnemy);
-			else
-				setState(States.Patrol);
-		}else{
+		// Por cercanía infiero quien atacó ya que source no es exactamente en donde estaba quien atacó
+		float enemyDistance = bField.calculateDistance(source, bField.getEnemyData().getFieldCell());
+		float hunterDistance = bField.calculateDistance(source, bField.getHunterData().getFieldCell());
+
+		if (hunterDistance < enemyDistance)
 			setState(States.EscapeFromHunter);
-		}
 	}
 
 	@Override
@@ -93,7 +90,6 @@ public class NormalWarrior extends Warrior {
 			
 		float nearestDist = Float.MAX_VALUE;
 		
-		// FIX: Se traba al conseguir algunos items
 		for (FieldCell cell : specialItems){
 			float dist = bField.calculateDistance(this.getPosition(), cell);
 			
@@ -112,13 +108,15 @@ public class NormalWarrior extends Warrior {
 	}
 	
 	private Action escapeRoutine(long tick, int actionNumber){
-		FieldCell enemyCell = bField.getEnemyData().getFieldCell();
 		FieldCell hunterCell = bField.getHunterData().getFieldCell();
+		FieldCell enemyCell = bField.getEnemyData().getFieldCell();
 		
-		if (state == States.EscapeFromEnemy)
-			return new WarriorMove(this, getEscapeDestination(enemyCell));
-		else
+		if (state == States.EscapeFromEnemy){		
+			return new WarriorMove(this, getEscapeDestination(enemyCell));	
+		}
+		else{
 			return new WarriorMove(this, getEscapeDestination(hunterCell));
+		}
 	}
 	
 	private FieldCell getEscapeDestination(FieldCell from){
@@ -144,10 +142,6 @@ public class NormalWarrior extends Warrior {
 	private void stateChangeCheck(){
 		switch(state){
 			case EscapeFromHunter: case EscapeFromEnemy:
-				/*
-				if (!bField.getHunterData().getInRange() || 
-						(this.getPosition() == escapeTop || this.getPosition() == escapeBottom))
-						*/
 				if (this.getPosition() == escapeTop || this.getPosition() == escapeBottom)
 					state=States.Idle;
 				break;

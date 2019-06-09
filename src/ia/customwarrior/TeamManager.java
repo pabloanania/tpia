@@ -37,10 +37,10 @@ public class TeamManager extends WarriorManager {
 		
 		if (rnd < 40){
 			percentages = fastPercentages;
-			name = "Sonic";
+			name = "Hulk";
 		}else if (rnd >= 40 && rnd < 75){
 			percentages = strongPercentages;
-			name = "Hulk";
+			name = "Sonic";
 		}else if (rnd >= 75 && rnd < 90){
 			percentages = healtyPercentages;
 			name = "Veggie";	

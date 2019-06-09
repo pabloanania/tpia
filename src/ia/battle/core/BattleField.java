@@ -891,9 +891,8 @@ public class BattleField {
 						}
 						
 					} else if (fieldCell.getItem() instanceof Ability) {
-						
-						//currentWarriorWrapper.getWarrior().getAbilities().add((Ability)fieldCell.getItem());
-						
+						currentWarriorWrapper.getWarrior().getAbilities().add((Ability)fieldCell.getItem());
+						fieldCell.removeItem();
 					}
 				}
 

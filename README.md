@@ -1,7 +1,5 @@
 # TO DO
-* Buscar los regalos
-* Armar paredes si es victorioso
-* Evitar al hunter
+* FIGHT!
 
 
 # Readme original

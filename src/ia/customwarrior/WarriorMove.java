@@ -40,6 +40,17 @@ public class WarriorMove extends Move{
 		
 		int[][] map = convertAStarMapFromIAMap();
 		AStar aStar = new AStar(map);
+		
+		// Boundary check
+		if (destX < 0)
+			destX = 0;
+		if (destY < 0)
+			destY = 0;
+		if (destX >= configManager.getMapWidth())
+			destX = configManager.getMapWidth() - 1;
+		if (destY >= configManager.getMapHeight())
+			destY = configManager.getMapHeight() - 1;
+		
 		ArrayList<Node> nodePath = aStar.findPath(warriorX, warriorY, destX, destY);
 		
 		for(Node n : nodePath)
